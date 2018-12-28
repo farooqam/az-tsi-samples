@@ -9,7 +9,7 @@
       "value": "deviceTimeStamp"
     },
     "tsiAccessPolicyReaderObjectId": {
-      "value": "AZURE-AD-APP-ID"
+      "value": "APP-ID"
     },
     "iotHubName": {
       "value": "GEN-UNIQUE"

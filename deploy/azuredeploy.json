@@ -175,6 +175,11 @@
           "events": {
             "retentionTimeInDays": "[parameters('d2cMessageRetentionInDaysPeriod')]",
             "partitionCount": "[parameters('d2cPartitionCount')]"
+          },
+          "operationsMonitoringEvents": {
+            "retentionTimeInDays": "[parameters('d2cMessageRetentionInDaysPeriod')]",
+            "partitionCount": "[parameters('d2cPartitionCount')]"
+
           }
         },
         "cloudToDevice": {
@@ -252,10 +257,6 @@
   "outputs": {
     "tsiDataAccessFQDN": {
       "value": "[reference(resourceId('Microsoft.TimeSeriesInsights/environments', parameters('tsiEnvironmentName'))).dataAccessFQDN]",
-      "type": "string"
-    },
-    "tsiAccessPolicyReaderObjectId": {
-      "value": "[parameters('tsiAccessPolicyReaderObjectId')]",
       "type": "string"
     }
   }
