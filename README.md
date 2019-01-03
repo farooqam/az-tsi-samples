@@ -39,8 +39,50 @@ Follow the steps [here](https://docs.microsoft.com/en-us/azure/iot-hub/quickstar
 
 ### Query TSI API using Postman
 
-#### Obtain an OAuth token from Azure Active Directory
-In order to query TSI API's an OAuth token must be supplied in the request. Follow the steps below to obtain this token.
+#### Import the Postman collection
+The Postman requests are stored in a Postman collection JSON file which must be imported.
 
 1. Open Postman.
-2. Create a **POST** request to the following URI substituting 
+2. Click the **Import** button.
+3. Click **Click Folder.**
+4. Click **Choose Folders.**
+5. Select the **/postman** folder.
+6. Select the **Collections** tab in the left pane and verify that the TSI-Samples collection appears and contains three requests.
+7. Click the Environments drop down in the upper right corner (to the left of the eye icon) and select the **TSISample** environment.
+
+### Provide Request Parameters
+The Postman environment contains variables whose values must be specified. 
+
+1. Click the eye icon in the top right corner and provide the following values:
+
+    a. tenantId - this is your Azure Active Directory tenant id.
+    
+    b. client_id - this is the app id of the Postman app that was registered in Active Directory in step 3 of the Prerequisites section.
+    
+    c. client_secret - this is the client secret of the Postman app that was registered in Active Directory in step 3 of the Prerequisites section.
+
+    d. token - this is the OAuth token which will be obtained in the next step.
+
+    d. fqdn - this is the value of the `tsiDataAccessFQDN` ARM template output parameter.
+
+2. Perform the following steps to obtain a token:
+
+    a. Expand the TSI-Samples collection in the left pane.
+
+    b. Select the request that starts with **https://login.microsoftonline.com**.
+
+    c. Click **Send**.
+
+    d. Copy the value of the **access_token** property in the response body and paste it in for the **token** variable in the TSISample environment.
+
+### Execute a Sensor Data Query
+
+1. Click the request that starts with **https://{{fqdn}}/events**.
+2. Click **Send**.
+3. Verify a response containing temperature values (among other values) is returned. 
+
+### View Sensor Data Event Schema
+
+1. Click the request that starts with **https://{{fqdn}}/metadata**.
+2. Click **Send**.
+3. Verify a response containing the schema is returned. 

@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "6fafb6a0-0912-4ceb-a074-e5742d7882c5",
+		"name": "TSI-samples",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://login.microsoftonline.com/{{tenantId}}/oauth2/token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fcb1d431-c8a7-431c-890d-599b6f897584",
+						"exec": [
+							"pm.test(\"Returns OK status code.\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client_secret}}",
+							"type": "text"
+						},
+						{
+							"key": "resource",
+							"value": "https://api.timeseries.azure.com/",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.microsoftonline.com/{{tenantId}}/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"microsoftonline",
+						"com"
+					],
+					"path": [
+						"{{tenantId}}",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://{{fqdn}}/events?api-version=2016-12-12",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fcb1d431-c8a7-431c-890d-599b6f897584",
+						"exec": [
+							"pm.test(\"Returns OK status code.\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"searchSpan\": {\n        \"from\": {\n            \"dateTime\": \"{{startdate}}\"\n        },\n        \"to\": {\n            \"dateTime\": \"{{enddate}}\"\n        }\n    },\n    \"predicate\": {\n        \"and\": [\n            {\n                \"gt\": {\n                    \"left\": {\n                        \"property\": \"temperature\",\n                        \"type\": \"Double\"\n                    },\n                    \"right\": 30\n                }\n            },\n            {\n                \"lt\": {\n                    \"left\": {\n                        \"property\": \"temperature\",\n                        \"type\": \"Double\"\n                    },\n                    \"right\": 32\n                }\n            }\n        ]\n    },\n    \"top\": {\n        \"sort\": [\n            {\n                \"input\": {\n                    \"builtInProperty\": \"$ts\"\n                },\n                \"order\": \"Asc\"\n            }\n        ],\n        \"count\": 10\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{fqdn}}/events?api-version=2016-12-12",
+					"protocol": "https",
+					"host": [
+						"{{fqdn}}"
+					],
+					"path": [
+						"events"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2016-12-12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://{{fqdn}}/metadata?api-version=2016-12-12",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fcb1d431-c8a7-431c-890d-599b6f897584",
+						"exec": [
+							"pm.test(\"Returns OK status code.\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"searchSpan\": {\n        \"from\": {\n            \"dateTime\": \"{{startdate}}\"\n        },\n        \"to\": {\n            \"dateTime\": \"{{enddate}}\"\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{fqdn}}/metadata?api-version=2016-12-12",
+					"protocol": "https",
+					"host": [
+						"{{fqdn}}"
+					],
+					"path": [
+						"metadata"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2016-12-12"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

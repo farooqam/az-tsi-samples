@@ -2,13 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "tsiConsumerGroupName": {
-      "type": "string",
-      "defaultValue": "tsi",
-      "metadata": {
-        "description": "The name of the consumer group that the Time Series Insights service will use to read the data from the event hub. NOTE: To avoid resource contention, this consumer group must be dedicated to the Time Series Insights service and not shared with other readers."
-      }
-    },
     "tsiEnvironmentName": {
       "type": "string",
       "maxLength": 90,
@@ -51,11 +44,11 @@
         "description": "Name of the event source child resource. The name cannot include:   '<', '>', '%', '&', ':', '\\', '?', '/' and any control characters. All other characters are allowed."
       }
     },
-    "tsiEventSourceTimestampPropertyName": {
+    "tsiEventSourceConsumerGroupName": {
       "type": "string",
-      "maxLength": 90,
+      "defaultValue": "$Default",
       "metadata": {
-        "description": "The event property that will be used as the event source's timestamp. If a value isn't specified for timestampPropertyName, or if null or empty-string is specified, the event creation time will be used."
+        "description": "The name of the consumer group that the Time Series Insights service will use to read the data from the event hub. NOTE: To avoid resource contention, this consumer group must be dedicated to the Time Series Insights service and not shared with other readers."
       }
     },
     "tsiAccessPolicyReaderObjectId": {
@@ -200,14 +193,6 @@
       "type": "Microsoft.Devices/IotHubs"
     },
     {
-      "apiVersion": "2016-02-03",
-      "dependsOn": [
-        "[concat('Microsoft.Devices/iothubs/', parameters('iotHubName'))]"
-      ],
-      "name": "[concat(parameters('iotHubName'), '/events/',parameters('tsiConsumerGroupName'))]",
-      "type": "Microsoft.Devices/iotHubs/eventhubEndpoints/ConsumerGroups"
-    },
-    {
       "type": "Microsoft.TimeSeriesInsights/environments",
       "name": "[parameters('tsiEnvironmentName')]",
       "apiVersion": "2017-11-15",
@@ -227,10 +212,9 @@
       "location": "[parameters('location')]",
       "kind": "Microsoft.IoTHub",
       "properties": {
-        "iotHubName": "parameters('iotHubName')",
-        "keyName": "parameters('iotHubKeyName')",
-        "consumerGroupName": "[parameters('tsiConsumerGroupName')]",
-        "timestampPropertyName": "[parameters('tsiEventSourceTimestampPropertyName')]",
+        "iotHubName": "[parameters('iotHubName')]",
+        "keyName": "[parameters('iotHubKeyName')]",
+        "consumerGroupName": "[parameters('tsiEventSourceConsumerGroupName')]",
         "eventSourceResourceId": "[resourceId('Microsoft.Devices/iothubs/', parameters('iotHubName'))]",
         "sharedAccessKey": "[listKeys(resourceId('Microsoft.Devices/IotHubs/Iothubkeys', parameters('iotHubName'), 'iothubowner'), '2016-02-03').primaryKey]"
       },
@@ -257,6 +241,10 @@
   "outputs": {
     "tsiDataAccessFQDN": {
       "value": "[reference(resourceId('Microsoft.TimeSeriesInsights/environments', parameters('tsiEnvironmentName'))).dataAccessFQDN]",
+      "type": "string"
+    },
+    "iotHubKey": {
+      "value": "[listKeys(resourceId('Microsoft.Devices/IotHubs/Iothubkeys', parameters('iotHubName'), 'iothubowner'), '2016-02-03').primaryKey]",
       "type": "string"
     }
   }
